@@ -8,6 +8,11 @@ spring:
       server:
         native:
           search-locations: classpath:/configurations
+<<<<<<< HEAD
 
 server:
   port: 8888
+=======
+server:
+  port: 8888
+>>>>>>> 3d6c976 (Added Config Server and Eureka Server)
