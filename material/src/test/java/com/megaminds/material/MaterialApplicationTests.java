@@ -1,10 +1,10 @@
-package com.megaminds.matriel;
+package com.megaminds.material;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class MatrielApplicationTests {
+class MaterialApplicationTests {
 
 	@Test
 	void contextLoads() {
