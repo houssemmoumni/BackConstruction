@@ -20,7 +20,7 @@ public class Material {
     private double availableQuantity;
     private BigDecimal price;
     @ManyToOne
-    @JoinColumn(name = "categorie_id")
+    @JoinColumn(name = "category_id")
     private Category category;
     @Enumerated(EnumType.STRING)
     private MaterialStatus status;

@@ -1,4 +1,5 @@
 USE material;
+
 CREATE TABLE IF NOT EXISTS category (
                                         id INT AUTO_INCREMENT PRIMARY KEY,
                                         description VARCHAR(255),
@@ -11,7 +12,7 @@ CREATE TABLE IF NOT EXISTS material (
                                         description VARCHAR(255),
                                         available_quantity DOUBLE NOT NULL,
                                         price DECIMAL(38, 2),
-                                        categorie_id INT,
+                                        category_id INT,  -- Make sure this column matches the field name in the entity
                                         status ENUM('A_LOUER', 'DISPONIBLE', 'NON_DISPONIBLE'),
-                                        FOREIGN KEY (categorie_id) REFERENCES category(id)
+                                        FOREIGN KEY (category_id) REFERENCES category(id)
 );
