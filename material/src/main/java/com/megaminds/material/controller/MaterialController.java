@@ -20,9 +20,10 @@ public class MaterialController {
 
     @PostMapping
     public ResponseEntity<Integer> createMaterial(
+            @RequestParam Integer userId,
             @RequestBody @Valid MaterialRequest request
     ) {
-        return ResponseEntity.ok(service.createMaterial(request));
+        return ResponseEntity.ok(service.createMaterial(userId,request));
     }
 
     @PostMapping("/purchase")
@@ -46,17 +47,19 @@ public class MaterialController {
 
     @PutMapping("/{material-id}")
     public ResponseEntity<MaterialResponse> updateMaterial(
+            @RequestParam Integer userId,  // Get userId from request param
             @PathVariable("material-id") Integer materialId,
             @RequestBody @Valid MaterialRequest request
     ) {
-        return ResponseEntity.ok(service.updateMaterial(materialId, request));
+        return ResponseEntity.ok(service.updateMaterial(userId,materialId, request));
     }
 
     @DeleteMapping("/{material-id}")
     public ResponseEntity<Void> deleteMaterial(
+            @RequestParam Integer userId,  // Get userId from request param
            @PathVariable("material-id") Integer materialId
     ) {
-        service.deleteMaterial(materialId);
+        service.deleteMaterial(userId,materialId);
         return ResponseEntity.noContent().build();
     }
 

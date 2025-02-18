@@ -45,3 +45,21 @@ INSERT INTO material (available_quantity, description, name, price, category_id,
                                                                                              (300, 'Fiber optic cables for internet connectivity', 'Fiber Optic Cables', 5.00, (SELECT id FROM category WHERE name = 'Wires'), 'NON_DISPONIBLE'),
                                                                                              (350, 'Coaxial cables for TV and networking', 'Coaxial Cables', 2.00, (SELECT id FROM category WHERE name = 'Wires'), 'DISPONIBLE'),
                                                                                              (450, 'Insulated wiring for industrial use', 'Insulated Wires', 3.00, (SELECT id FROM category WHERE name = 'Wires'), 'A_LOUER');
+
+INSERT INTO role (name)
+VALUES
+    ('ADMIN'),
+    ('CLIENT'),
+    ('OUVRIER');
+
+INSERT INTO user (username, password)
+VALUES
+    ('admin_user', 'password123'),
+    ('client_user', 'password456'),
+    ('ouvrier_user', 'password789');
+
+INSERT INTO user_roles (user_id, role_id)
+VALUES
+    ((SELECT id FROM user WHERE username = 'admin_user'), (SELECT id FROM role WHERE name = 'ADMIN')),
+    ((SELECT id FROM user WHERE username = 'client_user'), (SELECT id FROM role WHERE name = 'CLIENT')),
+    ((SELECT id FROM user WHERE username = 'ouvrier_user'), (SELECT id FROM role WHERE name = 'OUVRIER'));

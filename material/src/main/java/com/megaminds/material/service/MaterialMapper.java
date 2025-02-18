@@ -6,11 +6,12 @@ import com.megaminds.material.dto.MaterialResponse;
 import com.megaminds.material.entity.Category;
 import com.megaminds.material.entity.Material;
 import com.megaminds.material.entity.MaterialStatus;
+import com.megaminds.material.entity.User;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MaterialMapper {
-    public Material toMaterial(MaterialRequest request) {
+    public Material toMaterial(MaterialRequest request, User createdBy) {
         return Material.builder()
                 .id(request.id())
                 .name(request.name())
@@ -23,6 +24,7 @@ public class MaterialMapper {
                                 .build()
                 )
                 .status(MaterialStatus.valueOf(request.status()))
+                .createdBy(createdBy) // Set the createdBy user
                 .build();
     }
     public MaterialResponse toMaterialResponse(Material material) {

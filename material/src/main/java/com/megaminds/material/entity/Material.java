@@ -24,4 +24,7 @@ public class Material {
     private Category category;
     @Enumerated(EnumType.STRING)
     private MaterialStatus status;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false) // Track who created the material
+    private User createdBy;
 }

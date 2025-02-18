@@ -7,9 +7,11 @@ import com.megaminds.material.dto.MaterialResponse;
 import com.megaminds.material.entity.Category;
 import com.megaminds.material.entity.Material;
 import com.megaminds.material.entity.MaterialStatus;
+import com.megaminds.material.entity.User;
 import com.megaminds.material.exception.MaterialPurchaseException;
 import com.megaminds.material.repository.CategoryRepository;
 import com.megaminds.material.repository.MaterialRepository;
+import com.megaminds.material.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -26,12 +28,22 @@ public class MaterialService {
     private final MaterialRepository repository;
     private final CategoryRepository categoryRepository;
     private final MaterialMapper mapper;
+    private final UserRepository userRepository;
 
-    public Integer createMaterial(
+    private static final Integer ADMIN_USER_ID = 1; // Replace with your admin's userId
+
+
+    public Integer createMaterial(Integer userId,
             MaterialRequest request
-    ) {
-        var material = mapper.toMaterial(request);
+    ){
+        if (!userId.equals(ADMIN_USER_ID)) {
+            throw new RuntimeException("Access denied: Only admins can create materials");
+        }
+        User createdBy = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+        var material = mapper.toMaterial(request, createdBy);
         return repository.save(material).getId();
+
     }
     public MaterialResponse findById(Integer id) {
         return repository.findById(id)
@@ -76,10 +88,17 @@ public class MaterialService {
         }
         return purchasedMaterials;
     }
-    public MaterialResponse updateMaterial(Integer materialId, MaterialRequest request) {
-        // Find the material by ID
+    public MaterialResponse updateMaterial(Integer userId,Integer materialId, MaterialRequest request) {
+
         Material material = repository.findById(materialId)
                 .orElseThrow(() -> new RuntimeException("Material not found"));
+
+        // Check if the user is the admin or the creator of the material
+        if (!userId.equals(ADMIN_USER_ID)){
+            if (!material.getCreatedBy().getId().equals(userId)) {
+                throw new RuntimeException("Access denied: Only admins or the creator can update materials");
+            }
+        }
 
         // Find the category by ID
         Category category = categoryRepository.findById(request.categoryId())
@@ -108,14 +127,21 @@ public class MaterialService {
                 updatedMaterial.getCategory().getDescription(),
                 updatedMaterial.getStatus().name()
         );
+
     }
-    public void deleteMaterial(Integer materialId) {
-        // Check if the material exists
-        if (!repository.existsById(materialId)) { // Use 'repository' instead of 'materialRepository'
-            throw new RuntimeException("Material not found");
+    public void deleteMaterial(Integer userId,Integer materialId) {
+
+        Material material = repository.findById(materialId)
+                .orElseThrow(() -> new RuntimeException("Material not found"));
+
+        // Check if the user is the admin or the creator of the material
+        if (!userId.equals(ADMIN_USER_ID)) {
+            if (!material.getCreatedBy().getId().equals(userId)) {
+                throw new RuntimeException("Access denied: Only admins or the creator can delete materials");
+            }
         }
 
         // Delete the material
-        repository.deleteById(materialId); // Use 'repository' instead of 'materialRepository'
+        repository.deleteById(materialId);
     }
 }
