@@ -16,10 +16,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TaskController {
     private final TaskService taskService;
+    private static final int PROJECT_MANAGER_ID = 4; // Static Project Manager ID
+
 
     @PostMapping
     public ResponseEntity<TaskResponse> createTask(@RequestBody TaskRequest request) {
-        return ResponseEntity.ok(taskService.createTask(request));
+        return ResponseEntity.ok(taskService.createTask(request, PROJECT_MANAGER_ID));
     }
 
     @GetMapping("/{taskId}")

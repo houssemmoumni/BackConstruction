@@ -4,6 +4,7 @@ import com.megaminds.task.dto.TaskAssignmentRequest;
 import com.megaminds.task.dto.TaskAssignmentResponse;
 import com.megaminds.task.dto.TaskRequest;
 import com.megaminds.task.dto.TaskResponse;
+import com.megaminds.task.entity.RoleType;
 import com.megaminds.task.entity.Task;
 import com.megaminds.task.entity.TaskStatus;
 import com.megaminds.task.entity.User;
@@ -22,16 +23,25 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
     private final TaskMapper taskMapper;
+    private static final Integer PROJECT_MANAGER_ID = 4; // Static Project Manager ID
 
-    public TaskResponse createTask(TaskRequest request) {
-        User assignedBy = userRepository.findById(request.assignedById())
-                .orElseThrow(() -> new TaskException("Project Manager not found"));
-        User assignedTo = userRepository.findById(request.assignedToId())
-                .orElseThrow(() -> new TaskException("Ouvrier not found"));
 
-        Task task = taskMapper.toTask(request, assignedBy, assignedTo);
+    public TaskResponse createTask(TaskRequest request, int userId) {
+        if (userId != PROJECT_MANAGER_ID) {
+            throw new RuntimeException("Only the Project Manager can assign tasks.");
+        }
+
+        // Vérifier que l'ouvrier assigné existe et est bien un ouvrier
+        User assignedWorker = userRepository.findById(request.assignedToId())
+                .filter(user -> user.getRoles().stream().anyMatch(role -> role.getName() == RoleType.OUVRIER))
+                .orElseThrow(() -> new RuntimeException("Invalid Ouvrier ID"));
+
+        // Création de la tâche
+        Task task = taskMapper.toTask(request, assignedWorker);
         taskRepository.save(task);
+
         return taskMapper.toTaskResponse(task);
+
     }
 
     public TaskAssignmentResponse assignTask(TaskAssignmentRequest request) {
