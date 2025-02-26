@@ -1,5 +1,6 @@
 package com.megaminds.material.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,6 +18,7 @@ public class Category {
     private Integer id;
     private String name;
     private String description;
+    @JsonIgnore
     @OneToMany(mappedBy = "category",cascade = CascadeType.REMOVE)
     private List<Material> materials;
 }

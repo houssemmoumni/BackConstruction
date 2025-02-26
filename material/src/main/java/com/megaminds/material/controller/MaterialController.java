@@ -1,29 +1,42 @@
 package com.megaminds.material.controller;
 
-import com.megaminds.material.dto.MaterialPurchaseRequest;
-import com.megaminds.material.dto.MaterialPurchaseResponse;
-import com.megaminds.material.dto.MaterialRequest;
-import com.megaminds.material.dto.MaterialResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.megaminds.material.dto.*;
+import com.megaminds.material.entity.Category;
 import com.megaminds.material.service.MaterialService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/v1/materials")
 @RequiredArgsConstructor
 public class MaterialController {
     private final MaterialService service;
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Integer> createMaterial(
             @RequestParam Integer userId,
-            @RequestBody @Valid MaterialRequest request
+            @RequestPart("request") String request,
+            @RequestPart("file") MultipartFile file
     ) {
-        return ResponseEntity.ok(service.createMaterial(userId,request));
+        try {
+        ObjectMapper objectMapper = new ObjectMapper();
+        MaterialRequest requestmat = objectMapper.readValue(request, MaterialRequest.class);
+
+        ImageModel imageModel = new ImageModel();
+        imageModel.setName(file.getOriginalFilename());
+        imageModel.setFile(file);
+        return ResponseEntity.ok(service.createMaterial(userId,requestmat, imageModel));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build(); // Handle JSON parsing errors
+        }
     }
 
     @PostMapping("/purchase")
@@ -62,5 +75,8 @@ public class MaterialController {
         service.deleteMaterial(userId,materialId);
         return ResponseEntity.noContent().build();
     }
-
+    @GetMapping("/categories")
+    public List<Category> getAllCategories() {
+        return service.getAllCategories();
+    }
 }

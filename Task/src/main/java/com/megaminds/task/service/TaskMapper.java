@@ -22,7 +22,7 @@ public class TaskMapper {
         return Task.builder()
                 .title(request.title()) // Use title() instead of getTitle()
                 .description(request.description()) // Use description() instead of getDescription()
-                .status(TaskStatus.PENDING) // Default status for new tasks
+                .status(TaskStatus.valueOf(request.status())) // Default status for new tasks
                 .dueDate(request.dueDate()) // Use dueDate() instead of getDueDate()
                 .assignedBy(projectManager) // Assign the task from the project manager
                 .assignedTo(assignedTo)

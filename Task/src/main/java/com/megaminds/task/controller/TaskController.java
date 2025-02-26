@@ -13,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/tasks")
+@CrossOrigin(origins = "http://localhost:4200")
 @RequiredArgsConstructor
 public class TaskController {
     private final TaskService taskService;
@@ -41,7 +42,7 @@ public class TaskController {
 
     @DeleteMapping("/{taskId}")
     public ResponseEntity<Void> deleteTask(@PathVariable Integer taskId) {
-        taskService.deleteTask(taskId);
+        taskService.deleteTask(taskId, PROJECT_MANAGER_ID);
         return ResponseEntity.noContent().build();
     }
 

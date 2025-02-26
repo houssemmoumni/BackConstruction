@@ -11,6 +11,7 @@ import com.megaminds.task.entity.User;
 import com.megaminds.task.exception.TaskException;
 import com.megaminds.task.repository.TaskRepository;
 import com.megaminds.task.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +34,6 @@ public class TaskService {
 
         // Vérifier que l'ouvrier assigné existe et est bien un ouvrier
         User assignedWorker = userRepository.findById(request.assignedToId())
-                .filter(user -> user.getRoles().stream().anyMatch(role -> role.getName() == RoleType.OUVRIER))
                 .orElseThrow(() -> new RuntimeException("Invalid Ouvrier ID"));
 
         // Création de la tâche
@@ -83,8 +83,16 @@ public class TaskService {
         taskRepository.save(task);
         return taskMapper.toTaskResponse(task);
     }
+    @Transactional
 
-    public void deleteTask(Integer taskId) {
-        taskRepository.deleteById(taskId);
+    public void deleteTask(Integer taskId, int userId) {
+        if (userId != PROJECT_MANAGER_ID) {
+            throw new RuntimeException("Only the Project Manager can delete tasks.");
+        }
+        if (!taskRepository.existsById(taskId)) {
+            throw new TaskException("Task not found");
+        }taskRepository.deleteById(taskId);
+        taskRepository.flush(); // Force Hibernate to exe
+
     }
 }

@@ -20,7 +20,7 @@ import java.util.List;
 @Table(name = "customer_order")
 public class Order {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(unique = true,  nullable = false)
@@ -31,9 +31,10 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
 
-    private String customerId;
 
-    @OneToMany(mappedBy = "order")
+    private int customerId;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
     private List<OrderLine> orderLines;
 
     @CreatedDate

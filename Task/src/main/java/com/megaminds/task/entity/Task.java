@@ -28,6 +28,7 @@ public class Task {
     private User assignedBy; // Project Manager who assigned the task
 
     @ManyToOne
+
     @JoinColumn(name = "assigned_to_id", nullable = false)
     private User assignedTo; // Ouvrier who is assigned the task
 }

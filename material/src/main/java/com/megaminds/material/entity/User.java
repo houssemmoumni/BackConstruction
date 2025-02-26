@@ -46,13 +46,6 @@ public class User {
         this.roles = roles;
     }
 
-    public Set<Material> getMaterials() {
-        return materials;
-    }
-
-    public void setMaterials(Set<Material> materials) {
-        this.materials = materials;
-    }
 
     private String password;
 
@@ -62,6 +55,5 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
-    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Material> materials = new HashSet<>();
+
 }

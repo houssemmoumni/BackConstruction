@@ -1,5 +1,7 @@
 package com.megaminds.material.dto;
 
+import com.megaminds.material.entity.Image;
+
 import java.math.BigDecimal;
 
 public record MaterialResponse(
@@ -11,6 +13,7 @@ public record MaterialResponse(
         Integer categoryId,
         String categoryName,
         String categoryDescription,
-        String status
+        String status,
+        Image image
 ) {
 }

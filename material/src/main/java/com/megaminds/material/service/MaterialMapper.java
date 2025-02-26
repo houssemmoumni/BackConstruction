@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MaterialMapper {
-    public Material toMaterial(MaterialRequest request, User createdBy) {
+    public Material toMaterial(MaterialRequest request, int userId) {
         return Material.builder()
                 .id(request.id())
                 .name(request.name())
@@ -24,7 +24,7 @@ public class MaterialMapper {
                                 .build()
                 )
                 .status(MaterialStatus.valueOf(request.status()))
-                .createdBy(createdBy) // Set the createdBy user
+                .createdBy(userId)// Set the createdBy user
                 .build();
     }
     public MaterialResponse toMaterialResponse(Material material) {
@@ -37,7 +37,8 @@ public class MaterialMapper {
                 material.getCategory().getId(),
                 material.getCategory().getName(),
                 material.getCategory().getDescription(),
-                material.getStatus().name()
+                material.getStatus().name(),
+                material.getImage()
         );
     }
     public MaterialPurchaseResponse toMaterialPurchaseResponse(Material material, double quantity) {

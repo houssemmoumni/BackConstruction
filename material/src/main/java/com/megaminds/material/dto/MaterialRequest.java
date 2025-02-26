@@ -1,5 +1,6 @@
 package com.megaminds.material.dto;
 
+import com.megaminds.material.entity.Image;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
@@ -23,5 +24,6 @@ public record MaterialRequest(Integer id,
                               Integer categoryId,
 
                               @NotNull(message = "Material status is required")
-                              String status) {
+                              String status)
+{
 }

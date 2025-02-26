@@ -1,9 +1,6 @@
 package com.megaminds.material.service;
 
-import com.megaminds.material.dto.MaterialPurchaseRequest;
-import com.megaminds.material.dto.MaterialPurchaseResponse;
-import com.megaminds.material.dto.MaterialRequest;
-import com.megaminds.material.dto.MaterialResponse;
+import com.megaminds.material.dto.*;
 import com.megaminds.material.entity.Category;
 import com.megaminds.material.entity.Material;
 import com.megaminds.material.entity.MaterialStatus;
@@ -28,20 +25,20 @@ public class MaterialService {
     private final MaterialRepository repository;
     private final CategoryRepository categoryRepository;
     private final MaterialMapper mapper;
-    private final UserRepository userRepository;
+    private final ImageService imageService;
 
     private static final Integer ADMIN_USER_ID = 1; // Replace with your admin's userId
 
 
     public Integer createMaterial(Integer userId,
-            MaterialRequest request
+            MaterialRequest request, ImageModel model
     ){
         if (!userId.equals(ADMIN_USER_ID)) {
             throw new RuntimeException("Access denied: Only admins can create materials");
         }
-        User createdBy = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
-        var material = mapper.toMaterial(request, createdBy);
+
+        var material = mapper.toMaterial(request, userId);
+        imageService.uploadImage(material, model);
         return repository.save(material).getId();
 
     }
@@ -95,7 +92,7 @@ public class MaterialService {
 
         // Check if the user is the admin or the creator of the material
         if (!userId.equals(ADMIN_USER_ID)){
-            if (!material.getCreatedBy().getId().equals(userId)) {
+            if (material.getCreatedBy()!=userId) {
                 throw new RuntimeException("Access denied: Only admins or the creator can update materials");
             }
         }
@@ -125,7 +122,8 @@ public class MaterialService {
                 updatedMaterial.getCategory().getId(),
                 updatedMaterial.getCategory().getName(),
                 updatedMaterial.getCategory().getDescription(),
-                updatedMaterial.getStatus().name()
+                updatedMaterial.getStatus().name(),
+                updatedMaterial.getImage()
         );
 
     }
@@ -136,12 +134,15 @@ public class MaterialService {
 
         // Check if the user is the admin or the creator of the material
         if (!userId.equals(ADMIN_USER_ID)) {
-            if (!material.getCreatedBy().getId().equals(userId)) {
+            if (material.getCreatedBy()!=userId) {
                 throw new RuntimeException("Access denied: Only admins or the creator can delete materials");
             }
         }
 
         // Delete the material
         repository.deleteById(materialId);
+    }
+    public List<Category> getAllCategories() {
+        return categoryRepository.findAll();
     }
 }
