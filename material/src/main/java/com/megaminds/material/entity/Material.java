@@ -25,6 +25,6 @@ public class Material {
     @Enumerated(EnumType.STRING)
     private MaterialStatus status;
     private int createdBy;
-    @OneToOne(mappedBy = "material",cascade = CascadeType.PERSIST)
+    @OneToOne(mappedBy = "material",cascade = CascadeType.ALL)
     private Image image;
 }

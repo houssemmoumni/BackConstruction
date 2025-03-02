@@ -17,7 +17,7 @@ public class Image {
     @Column(name = "url_image")
     private String url;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.ALL)
     @JsonIgnore
     private Material material;
 

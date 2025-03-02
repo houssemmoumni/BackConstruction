@@ -9,6 +9,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @AllArgsConstructor
 @Builder
@@ -44,4 +45,12 @@ public class Order {
     @LastModifiedDate
     @Column(insertable = false)
     private LocalDateTime lastModifiedDate;
+
+    @PrePersist
+    public void generateReference() {
+        if (this.reference == null) {
+            // Generate a unique reference using timestamp and UUID
+            this.reference = "ORD-" + LocalDateTime.now().toString().replaceAll("[-:.]", "") + "-" + UUID.randomUUID().toString().substring(0, 8);
+        }
+    }
 }
