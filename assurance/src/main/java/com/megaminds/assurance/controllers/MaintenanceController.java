@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
-@RequestMapping("/api/maintenances")
+@RequestMapping("/api/assurance/maintenances")
 public class MaintenanceController {
 
     private final MaintenanceService maintenanceService;

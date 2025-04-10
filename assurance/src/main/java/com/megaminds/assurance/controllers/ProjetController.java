@@ -8,7 +8,7 @@ import java.util.List;
 
 @CrossOrigin("http://localhost:4200")
 @RestController
-@RequestMapping("/api/projets")
+@RequestMapping("/api/assurance/projets")
 public class ProjetController {
     private final ProjetRepository projetRepository;
 
