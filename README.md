@@ -29,6 +29,7 @@ Le système couvre plusieurs modules métiers essentiels :
 - ☁️ **Spring Cloud Config Server** : Gestion centralisée des configurations
 - 🔍 **Eureka Discovery Server** : Enregistrement et découverte des services
 - 🛢️ **Bases de données utilisées** :
+  - **MySQL/MariaDB via XAMPP** : Pour la gestion des données relationnelles en local
   - **MongoDB** pour la persistance des données non relationnelles
   - **H2** pour les tests ou microservices légers en mémoire
 - 🔐 **JWT** : Sécurité et gestion des accès
