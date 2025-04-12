@@ -1,4 +1,4 @@
-package com.megaminds.notification.entity;
+package com.megaminds.notification.kafka.order;
 
 public enum PaymentMethod {
     PAYPAL,

@@ -13,7 +13,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/tasks")
-@CrossOrigin(origins = "http://localhost:4200")
 @RequiredArgsConstructor
 public class TaskController {
     private final TaskService taskService;
@@ -34,6 +33,10 @@ public class TaskController {
     public ResponseEntity<List<TaskResponse>> getAllTasks() {
         return ResponseEntity.ok(taskService.getAllTasks());
     }
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<TaskResponse>> getTaskByUserId(@PathVariable Integer userId) {
+        return ResponseEntity.ok(taskService.getAllTasksByUser(userId));
+    }
 
     @PutMapping("/{taskId}")
     public ResponseEntity<TaskResponse> updateTask(@PathVariable Integer taskId, @RequestBody TaskRequest request) {
@@ -49,5 +52,10 @@ public class TaskController {
     @PostMapping("/assign")
     public ResponseEntity<TaskAssignmentResponse> assignTask(@RequestBody TaskAssignmentRequest request) {
         return ResponseEntity.ok(taskService.assignTask(request));
+    }
+
+    @GetMapping("/worker")
+    public ResponseEntity<List<TaskResponse>> getTasksForWorker() {
+        return ResponseEntity.ok(taskService.getTasksByWorker());
     }
 }

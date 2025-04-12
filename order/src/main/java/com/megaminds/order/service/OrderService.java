@@ -6,6 +6,9 @@ import com.megaminds.order.dto.OrderResponse;
 import com.megaminds.order.entity.Order;
 import com.megaminds.order.entity.PaymentMethod;
 import com.megaminds.order.entity.User;
+import com.megaminds.order.kafka.OrderConfirmation;
+import com.megaminds.order.kafka.OrderProducer;
+import com.megaminds.order.material.MaterialClient;
 import com.megaminds.order.material.PurchaseRequest;
 import com.megaminds.order.material.PurchaseResponse;
 import com.megaminds.order.repository.OrderRepository;
@@ -26,6 +29,9 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper mapper;
     private final OrderLineService orderLineService;
+    private final OrderProducer orderProducer;
+    private final MaterialClient materialClient;
+    private final SmsService smsService;
 
 
     @Value("${application.static-user-id}") // Static user ID from configuration
@@ -33,7 +39,7 @@ public class OrderService {
 
     @Transactional
     public Integer createOrder(OrderRequest request) {
-
+        var purchasedProducts = materialClient.purchaseProducts(request.materials());
         var order = this.orderRepository.save(mapper.toOrder(request));
         System.out.println(request.materials());
         for (PurchaseRequest purchaseRequest : request.materials()) {
@@ -56,6 +62,19 @@ public class OrderService {
         paymentClient.requestOrderPayment(paymentRequest);
 
         */
+
+        orderProducer.sendOrderConfirmation(
+                new OrderConfirmation(
+                        order.getReference(),
+                        request.amount(),
+                        request.paymentMethod(),
+                        purchasedProducts
+                )
+        );
+        // Envoi du SMS de confirmation
+            String message = String.format("Votre commande %s a été confirmée avec un montant de %.2f.",
+                    order.getReference(), request.amount());
+            smsService.sendSms("+21695359282", message); // Remplacez par le numéro du client
 
         return order.getId();
     }

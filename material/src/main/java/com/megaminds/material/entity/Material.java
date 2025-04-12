@@ -27,4 +27,15 @@ public class Material {
     private int createdBy;
     @OneToOne(mappedBy = "material",cascade = CascadeType.ALL)
     private Image image;
+
+    public void updateStatus() {
+        if (this.availableQuantity == 0) {
+            this.status = MaterialStatus.NON_DISPONIBLE;
+        }
+    }
+
+    public void setAvailableQuantity(double availableQuantity) {
+        this.availableQuantity = availableQuantity;
+        this.updateStatus(); // Update status whenever quantity changes
+    }
 }
