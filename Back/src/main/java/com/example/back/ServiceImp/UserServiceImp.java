@@ -3,19 +3,16 @@ package com.example.back.ServiceImp;
 import com.example.back.Entities.User;
 import com.example.back.Repositories.UserRepository;
 import com.example.back.SecurityConfig.KeycloakConfig;
-import com.example.back.Services.StorageService;
 import com.example.back.Services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.springframework.stereotype.Service;
 import org.keycloak.representations.idm.UserRepresentation;
 import com.example.back.Entities.Enums.UserRole;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -133,47 +130,7 @@ public class UserServiceImp implements UserService {
 
 
     private final UserRepository userRepos;
-    public void syncUsersFromKeycloak() {
-        Keycloak k = KeycloakConfig.getInstance();
-        log.info("Fetching users from Keycloak...");
 
-        try {
-            List<UserRepresentation> keycloakUsers = k.realm("constructionRealm").users().list();
-
-            for (UserRepresentation keycloakUser : keycloakUsers) {
-                if (userRepository.findByEmail(keycloakUser.getEmail()) == null) {
-                    log.info("Adding user from Keycloak to database: {}", keycloakUser.getEmail());
-
-                    User newUser = new User();
-                    newUser.setEmail(keycloakUser.getEmail());
-                    newUser.setLogin(keycloakUser.getUsername());
-                    newUser.setFirstName(keycloakUser.getFirstName());
-                    newUser.setLastName(keycloakUser.getLastName());
-                    newUser.setKeycloakId(keycloakUser.getId());
-
-                    // Extract only one role (either 'admin' or 'user')
-                    List<String> roles = keycloak.realm("constructionRealm")
-                            .users()
-                            .get(keycloakUser.getId())
-                            .roles()
-                            .realmLevel()
-                            .listAll()
-                            .stream()
-                            .map(RoleRepresentation::getName)
-                            .collect(Collectors.toList());
-
-                    // Assign the correct role
-                    String assignedRole = roles.contains("admin") ? "admin" : "user";
-                    newUser.setRole(String.valueOf(UserRole.valueOf(String.valueOf(user))));
-
-                    userRepository.save(newUser);
-                }
-            }
-            log.info("Keycloak users successfully synchronized to the database.");
-        } catch (Exception e) {
-            log.error("Error synchronizing Keycloak users: {}", e.getMessage());
-        }
-    }
 
     public boolean existsByLogin(String login) {
         return userRepository.findByLogin(login) != null;

@@ -25,18 +25,11 @@ public class User {
     String lastName;
     @Column(length = 255)
     String role;
-
     int num_tel;
-
-
-        @Column(name = "keycloak_id", unique = true)
+    @Column(name = "keycloak_id", unique = true)
         private String keycloakId; // Store Keycloak ID
-
-    @Lob // Store as BLOB
+    @Lob
     @Column(name = "image", columnDefinition = "LONGBLOB")
     private byte[] image;
-
-
-
 
 }

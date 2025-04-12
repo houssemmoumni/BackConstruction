@@ -37,7 +37,7 @@
                         .serverUrl("http://localhost:8080/")
                         .realm("constructionRealm")
                         .grantType(OAuth2Constants.PASSWORD)
-                        .username("7libbon01@gmail.com")
+                        .username("mehdi.by02@gmail.com")
                         .password("user")
                         .clientId("backapp")
                         .clientSecret("ogiZOIVmFkm4P2ZMWBcXbsjPbTNng0J9")
@@ -200,7 +200,7 @@
          */
         private static Map<String, String> getLocationFromIPMaxMind(String ip) {
             try {
-                File database = new File("C:\\Users\\MSI\\Downloads\\wetransfer_back-zip_2025-03-13_0142\\Back\\src\\main\\java\\com\\example\\back\\GeoLite2-City.mmdb");
+                File database = new File("C:\\Users\\mehdy\\Desktop\\projetPi\\Back\\src\\main\\java\\com\\example\\back\\GeoLite2-City.mmdb");
                 DatabaseReader reader = new DatabaseReader.Builder(database).build();
                 InetAddress ipAddress = InetAddress.getByName(ip);
                 CityResponse response = reader.city(ipAddress);
@@ -224,4 +224,5 @@
         public static String getAccessToken() {
             return getInstance().tokenManager().grantToken().getToken();
         }
+
     }
