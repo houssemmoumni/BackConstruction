@@ -26,7 +26,7 @@ public class ContractController {
                 .build());
         headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
 
-        return new ResponseEntity<>(contractPdf, headers, HttpStatus.OK);
+        return new ResponseEntity<>(contractPdf, headers, HttpStatus.OK) ;
     }
 
     @PostMapping("/{candidateId}")
