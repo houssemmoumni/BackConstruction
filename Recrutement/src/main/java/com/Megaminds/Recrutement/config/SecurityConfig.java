@@ -25,6 +25,7 @@ public class SecurityConfig {
                                 "/api/contracts/**",
                                 "/api/applications/**",
                                 "/api/interviews/**",
+                                "/api/job-offers/**",
                                 "/ws/**"
                         ).permitAll()
                         .anyRequest().authenticated()

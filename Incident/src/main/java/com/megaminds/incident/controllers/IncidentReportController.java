@@ -24,6 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/incidents")
@@ -38,7 +39,6 @@ public class IncidentReportController {
     private final IncidentActionRepository incidentActionRepository;
     private final JavaMailSender mailSender;
 
-    // Constructor remains exactly the same
     public IncidentReportController(
             IncidentReportService incidentReportService,
             NotificationService notificationService,
@@ -56,7 +56,6 @@ public class IncidentReportController {
         this.mailSender = mailSender;
     }
 
-    // Add this inner class for email results
     private static class EmailResult {
         final boolean success;
         final String errorMessage;
@@ -67,7 +66,59 @@ public class IncidentReportController {
         }
     }
 
-    // Updated assignIncident method
+    // Nouvelle méthode pour générer le lien de résolution
+    @GetMapping("/{id}/resolve-link")
+    public ResponseEntity<Map<String, String>> generateResolveLink(@PathVariable Long id) {
+        IncidentReport incident = incidentReportRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Incident not found"));
+
+        if (incident.getResolutionToken() == null) {
+            incident.setResolutionToken(UUID.randomUUID().toString());
+            incidentReportRepository.save(incident);
+        }
+
+        Map<String, String> response = new HashMap<>();
+        response.put("link", "http://localhost:4200/resolve/" + id + "?token=" + incident.getResolutionToken());
+        return ResponseEntity.ok(response);
+    }
+
+    // Nouvelle méthode pour récupérer un incident par son token
+    @GetMapping("/by-token/{token}")
+    public ResponseEntity<IncidentReport> getIncidentByToken(@PathVariable String token) {
+        IncidentReport incident = incidentReportRepository.findByResolutionToken(token)
+                .orElseThrow(() -> new RuntimeException("Invalid or expired token"));
+        return ResponseEntity.ok(incident);
+    }
+
+    // Nouvelle méthode pour résoudre avec token
+    @PatchMapping("/{id}/resolve-with-token")
+    public ResponseEntity<IncidentReport> resolveWithToken(
+            @PathVariable Long id,
+            @RequestParam boolean resolved,
+            @RequestParam String token) {
+
+        IncidentReport incident = incidentReportRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Incident not found"));
+
+        if (!incident.getResolutionToken().equals(token)) {
+            throw new RuntimeException("Invalid token");
+        }
+
+        incident.setStatus(resolved ? IncidentStatus.RESOLVED : IncidentStatus.REOPENED);
+        incident.setResolutionToken(null);
+        IncidentReport updatedIncident = incidentReportRepository.save(incident);
+
+        IncidentAction action = new IncidentAction();
+        action.setDescription(resolved ? "Incident resolved via token" : "Incident reopened via token");
+        action.setActionDate(LocalDate.now());
+        action.setActionType(resolved ? IncidentActionType.RESOLVED : IncidentActionType.REOPENED);
+        action.setIncidentReport(updatedIncident);
+        action.setPerformedBy(incident.getAssignedTo());
+        incidentActionRepository.save(action);
+
+        return ResponseEntity.ok(updatedIncident);
+    }
+
     @PostMapping("/{incidentId}/assign")
     public ResponseEntity<?> assignIncident(
             @PathVariable Long incidentId,
@@ -76,7 +127,6 @@ public class IncidentReportController {
         Map<String, Object> response = new HashMap<>();
 
         try {
-            // 1. Process incident assignment
             IncidentReport updatedIncident = incidentReportService.assignIncident(
                     incidentId,
                     request.getTechnicianId(),
@@ -84,7 +134,10 @@ public class IncidentReportController {
                     request.getComments()
             );
 
-            // 2. Create assignment action
+            // Génération du token lors de l'assignation
+            updatedIncident.setResolutionToken(UUID.randomUUID().toString());
+            incidentReportRepository.save(updatedIncident);
+
             IncidentAction action = new IncidentAction();
             action.setDescription(request.getComments() != null ?
                     request.getComments() : "Incident assigned to technician");
@@ -94,11 +147,9 @@ public class IncidentReportController {
             action.setPerformedBy(userRepository.findById(request.getAdminId()).orElse(null));
             incidentActionRepository.save(action);
 
-            // 3. Get technician details
             User technician = userRepository.findById(request.getTechnicianId())
                     .orElseThrow(() -> new RuntimeException("Technician not found"));
 
-            // 4. Create and send notification
             Notification notification = new Notification();
             notification.setMessage("New incident assigned to you: " + updatedIncident.getDescription());
             notification.setNotificationDate(LocalDateTime.now());
@@ -110,7 +161,7 @@ public class IncidentReportController {
             Notification savedNotification = notificationService.createNotification(notification);
             messagingTemplate.convertAndSend("/topic/notifications", savedNotification);
 
-            // 5. Send email and prepare response
+            // Mise à jour de l'email avec le lien de résolution
             EmailResult emailResult = sendAssignmentEmail(technician, updatedIncident);
 
             response.put("success", true);
@@ -130,9 +181,10 @@ public class IncidentReportController {
         }
     }
 
-    // Helper method for sending emails
     private EmailResult sendAssignmentEmail(User technician, IncidentReport incident) {
         try {
+            String resolveLink = "http://localhost:4200/resolve/" + incident.getId() + "?token=" + incident.getResolutionToken();
+
             SimpleMailMessage email = new SimpleMailMessage();
             email.setTo(technician.getEmail());
             email.setSubject("New Incident Assigned: #" + incident.getId());
@@ -143,7 +195,8 @@ public class IncidentReportController {
                             "Description: " + incident.getDescription() + "\n" +
                             "Severity: " + incident.getSeverity() + "\n" +
                             "Project: " + incident.getProject().getName() + "\n\n" +
-                            "Please resolve it at your earliest convenience.\n\n" +
+                            "Please click the following link to resolve it:\n" +
+                            resolveLink + "\n\n" +
                             "Thank you,\n" +
                             "Incident Management System"
             );
@@ -160,7 +213,6 @@ public class IncidentReportController {
         }
     }
 
-    // ALL YOUR EXISTING METHODS BELOW - THEY REMAIN EXACTLY THE SAME
     @PostConstruct
     public void debugMailConfig() {
         if (mailSender instanceof JavaMailSenderImpl) {
