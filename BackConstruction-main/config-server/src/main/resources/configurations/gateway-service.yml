@@ -1,0 +1,47 @@
+server:
+  port: 8222  # ✅ Port forcé ici
+
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: blog-service
+          uri: lb://BLOG-SERVICE  # ✅ Format correct (lb://, pas lb:http://)
+          predicates:
+            - Path=/blogs/**
+        - id: blog-service
+          uri: lb://BLOG-SERVICE
+          predicates:
+            - Path=/comments/**
+        - id: comment-service
+          uri: lb://COMMENT-SERVICE  # Corrigé (TASK-SERVICE → COMMENT-SERVICE ?)
+          predicates:
+            - Path=/api/comments/**
+        - id: order-lines-service
+          uri: lb://ORDER-SERVICE
+          predicates:
+            - Path=/api/v1/order-lines/**
+        - id: material-service
+          uri: lb://MATERIAL-SERVICE
+          predicates:
+            - Path=/api/v1/materials/**
+        - id: payment-service
+          uri: lb://PAYMENT-SERVICE
+          predicates:
+            - Path=/api/v1/payments/**
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowed-origins: "http://localhost:4200"
+            allowed-methods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowed-headers: "*"
+            allow-credentials: true
+            max-age: 3600
