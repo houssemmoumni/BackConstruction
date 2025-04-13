@@ -7,6 +7,7 @@ import java.util.List;
 
 @Entity
 public class Application {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,7 +21,8 @@ public class Application {
     private JobOffer jobOffer;
 
     @Enumerated(EnumType.STRING)
-    private ApplicationStatus status;
+    @Column(length = 20)
+    private ApplicationStatus status = ApplicationStatus.PENDING;
 
     private LocalDate date = LocalDate.now();
 
@@ -31,7 +33,6 @@ public class Application {
     @JsonIgnore
     private List<Interview> interviews;
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -86,5 +87,17 @@ public class Application {
 
     public void setInterviews(List<Interview> interviews) {
         this.interviews = interviews;
+    }
+
+    public void addInterview(Interview interview) {
+        if (interviews != null) {
+            interviews.add(interview);
+        }
+    }
+
+    public void removeInterview(Interview interview) {
+        if (interviews != null) {
+            interviews.remove(interview);
+        }
     }
 }

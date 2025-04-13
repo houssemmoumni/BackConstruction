@@ -9,6 +9,8 @@ public interface IncidentReportRepository extends JpaRepository<IncidentReport, 
     List<IncidentReport> findByProjectId(Long projectId);
     List<IncidentReport> findByStatus(IncidentStatus status);
     List<IncidentReport> findByStatusNot(IncidentStatus status);
-
     List<IncidentReport> findByAssignedToId(Long technicianId);
+
+    // Add the delete method for deleting IncidentReports by projectId
+    void deleteByProjectId(Long projectId);  // This will delete all incident reports linked to a project
 }

@@ -2,7 +2,6 @@ package com.Megaminds.Recrutement.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Entity
 public class Interview {
@@ -20,8 +19,9 @@ public class Interview {
     private String feedback;
     private String token;
     private boolean linkActive;
+    private boolean completed = false;
+    private Boolean passed;
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -84,5 +84,21 @@ public class Interview {
 
     public void setLinkActive(boolean linkActive) {
         this.linkActive = linkActive;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
+
+    public Boolean getPassed() {
+        return passed;
+    }
+
+    public void setPassed(Boolean passed) {
+        this.passed = passed;
     }
 }

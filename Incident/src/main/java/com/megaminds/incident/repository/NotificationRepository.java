@@ -13,6 +13,7 @@ import java.util.List;
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
     List<Notification> findByReceiverId(Long receiverId);
     List<Notification> findByReceiverIdAndIsReadFalse(Long receiverId);
+    void deleteByIncidentReportId(Long incidentReportId);
 
     @Transactional
     @Modifying

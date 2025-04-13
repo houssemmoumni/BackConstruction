@@ -2,20 +2,31 @@ package com.Megaminds.Recrutement.controllers;
 
 import com.Megaminds.Recrutement.entity.Contract;
 import com.Megaminds.Recrutement.service.ContractService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/contracts")
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class ContractController {
-
     private final ContractService contractService;
 
     public ContractController(ContractService contractService) {
         this.contractService = contractService;
+    }
+
+    @GetMapping("/generate/{applicationId}")
+    public ResponseEntity<byte[]> generateContract(@PathVariable Long applicationId) {
+        byte[] contractPdf = contractService.generateContractPdf(applicationId);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.attachment()
+                .filename("contract_" + applicationId + ".pdf")
+                .build());
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+        return new ResponseEntity<>(contractPdf, headers, HttpStatus.OK);
     }
 
     @PostMapping("/{candidateId}")

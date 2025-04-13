@@ -9,6 +9,7 @@ spring:
     username: root  # Nom d'utilisateur de la base de données
     password:       # Mot de passe de la base de données (laissez vide si aucun mot de passe)
     driver-class-name: com.mysql.cj.jdbc.Driver
+
   jpa:
     hibernate:
       ddl-auto: update  # Met à jour le schéma de la base de données automatiquement
@@ -17,6 +18,10 @@ spring:
       hibernate:
         format_sql: true  # Formate les requêtes SQL pour une meilleure lisibilité
         dialect: org.hibernate.dialect.MySQL8Dialect
+        cors:
+          allowed-origins: "http://localhost:4200"  # Correct YAML format for CORS
+          allowed-methods: "GET,POST,PUT,PATCH,DELETE"
+          allow-credentials: true
   mail:
     host: smtp.gmail.com
     port: 587

@@ -62,7 +62,6 @@ public class InterviewService {
         String jobTitle = application.getJobOffer().getTitle();
         String interviewLink = frontendUrl + "/interview/" + interview.getToken();
 
-        // Immediate confirmation
         emailService.sendEmail(
                 candidateEmail,
                 "Interview Scheduled for " + jobTitle,
@@ -71,7 +70,6 @@ public class InterviewService {
                         interview.getInterviewTime() + ".\n\nView details: " + interviewLink
         );
 
-        // 24-hour reminder
         LocalDateTime reminderTime = LocalDateTime.of(
                 interview.getInterviewDate().minusDays(1),
                 LocalTime.of(9, 0)
@@ -83,7 +81,6 @@ public class InterviewService {
                 reminderTime
         );
 
-        // 1-hour reminder
         LocalDateTime finalReminder = LocalDateTime.of(
                 interview.getInterviewDate(),
                 LocalTime.parse(interview.getInterviewTime()).minusHours(1)
@@ -129,5 +126,13 @@ public class InterviewService {
                 interviewRepository.save(interview);
             }
         });
+    }
+
+    public Interview completeInterview(Long interviewId) {
+        return interviewRepository.findById(interviewId).map(interview -> {
+            interview.setCompleted(true);
+            interview.setFeedback("The interview was completed successfully.");
+            return interviewRepository.save(interview);
+        }).orElseThrow(() -> new RuntimeException("Interview not found"));
     }
 }

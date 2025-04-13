@@ -1,45 +1,33 @@
 package com.Megaminds.Recrutement.service;
 
-import com.Megaminds.Recrutement.entity.Application;
-import com.Megaminds.Recrutement.entity.ApplicationStatus;
-import com.Megaminds.Recrutement.entity.Candidate;
-import com.Megaminds.Recrutement.entity.Interview;
-import com.Megaminds.Recrutement.entity.JobOffer;
-import com.Megaminds.Recrutement.repository.ApplicationRepository;
-import com.Megaminds.Recrutement.repository.CandidateRepository;
-import com.Megaminds.Recrutement.repository.InterviewRepository;
-import com.Megaminds.Recrutement.repository.JobOfferRepository;
+import com.Megaminds.Recrutement.entity.*;
+import com.Megaminds.Recrutement.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ApplicationService {
-
     private final ApplicationRepository applicationRepository;
     private final CandidateRepository candidateRepository;
     private final JobOfferRepository jobOfferRepository;
-    private final InterviewRepository interviewRepository; // Ajout du repository Interview
+    private final InterviewRepository interviewRepository;
 
     public ApplicationService(ApplicationRepository applicationRepository,
                               CandidateRepository candidateRepository,
                               JobOfferRepository jobOfferRepository,
-                              InterviewRepository interviewRepository) { // Injection du repository Interview
+                              InterviewRepository interviewRepository) {
         this.applicationRepository = applicationRepository;
         this.candidateRepository = candidateRepository;
         this.jobOfferRepository = jobOfferRepository;
         this.interviewRepository = interviewRepository;
     }
 
-    // Méthode pour postuler à une offre d'emploi
     public Application applyForJob(Long candidateId, Long jobOfferId, MultipartFile resumeFile) throws IOException {
         Candidate candidate = candidateRepository.findById(candidateId)
                 .orElseThrow(() -> new RuntimeException("Candidate not found"));
-
         JobOffer jobOffer = jobOfferRepository.findById(jobOfferId)
                 .orElseThrow(() -> new RuntimeException("Job Offer not found"));
 
@@ -55,26 +43,39 @@ public class ApplicationService {
         return applicationRepository.save(application);
     }
 
-    // Méthode pour récupérer toutes les candidatures
     public List<Application> getAllApplications() {
         return applicationRepository.findAll();
     }
 
-    // Méthode pour mettre à jour le statut d'une candidature
-    public Application updateApplicationStatus(Long id, String status) {
-        return applicationRepository.findById(id).map(application -> {
-            application.setStatus(ApplicationStatus.valueOf(status.toUpperCase()));
+    public Application getApplicationById(Long id) {
+        return applicationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Application not found"));
+    }
 
-            // Si la candidature est acceptée, générer un entretien automatiquement
-            if (status.equalsIgnoreCase("ACCEPTED")) {
-                Interview interview = new Interview();
-                interview.setInterviewDate(LocalDate.now().plusDays(7)); // Entretien dans 7 jours
-                interview.setFeedback(""); // Feedback vide par défaut
-                interview.setApplication(application);
-                interviewRepository.save(interview); // Enregistrer l'entretien
-            }
+    public Application updateApplicationStatus(Long id, ApplicationStatus status) {
+        Application application = applicationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Application not found"));
 
-            return applicationRepository.save(application);
-        }).orElseThrow(() -> new RuntimeException("Application not found"));
+        application.setStatus(status);
+
+        if (status == ApplicationStatus.ACCEPTED) {
+            createInterviewForAcceptedApplication(application);
+        }
+
+        return applicationRepository.save(application);
+    }
+
+    private void createInterviewForAcceptedApplication(Application application) {
+        Interview interview = new Interview();
+        interview.setInterviewDate(LocalDate.now().plusDays(7));
+        interview.setFeedback("");
+        interview.setApplication(application);
+        interviewRepository.save(interview);
+    }
+
+    public void deleteApplication(Long id) {
+        Application application = applicationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Application not found"));
+        applicationRepository.delete(application);
     }
 }
