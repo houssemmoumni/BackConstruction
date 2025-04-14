@@ -31,8 +31,8 @@ public class NotificationsConsumer {
         );
         System.out.println("ordery" + orderConfirmation.products());
         emailService.sendOrderConfirmationEmail(
-                "selmi_yosri@outlook.fr",
-                "yosri",
+                orderConfirmation.user().getEmail(),
+                orderConfirmation.user().getFirstName(),
                 orderConfirmation.totalAmount(),
                 orderConfirmation.orderReference(),
                 orderConfirmation.products()

@@ -40,6 +40,10 @@ spring:
           uri: lb:http://PAYMENT-SERVICE
           predicates:
                - Path=/api/v1/payments/**
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/api/service/user/**
       globalcors:
         cors-configurations:
           '[/**]':

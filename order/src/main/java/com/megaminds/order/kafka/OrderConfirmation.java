@@ -1,5 +1,7 @@
 package com.megaminds.order.kafka;
 
+import com.megaminds.order.dto.UserDto;
+import com.megaminds.order.dto.UserWrapperDto;
 import com.megaminds.order.entity.PaymentMethod;
 import com.megaminds.order.material.PurchaseResponse;
 
@@ -10,7 +12,9 @@ public record OrderConfirmation(
         String orderReference,
         BigDecimal totalAmount,
         PaymentMethod paymentMethod,
-        List<PurchaseResponse> products
+        List<PurchaseResponse> products,
+
+        UserDto user
 ) {
 
 }

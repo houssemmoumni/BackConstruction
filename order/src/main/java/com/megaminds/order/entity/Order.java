@@ -33,7 +33,7 @@ public class Order {
     private PaymentMethod paymentMethod;
 
 
-    private int customerId;
+    private Long customerId;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
     private List<OrderLine> orderLines;

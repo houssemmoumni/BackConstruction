@@ -20,7 +20,7 @@ public record OrderRequest(Integer id,
                            @NotNull(message = "Payment method should be precised")
                            PaymentMethod paymentMethod,
                            @NotNull(message = "Customer should be present")
-                            int customerId,
+                            Long customerId,
                            @NotEmpty(message = "You should at least purchase one material")
                            List<PurchaseRequest> materials) {
 }

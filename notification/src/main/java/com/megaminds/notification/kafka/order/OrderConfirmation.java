@@ -1,5 +1,7 @@
 package com.megaminds.notification.kafka.order;
 
+import com.megaminds.notification.UserDto.UserDto;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -8,6 +10,7 @@ public record OrderConfirmation(
         BigDecimal totalAmount,
         PaymentMethod paymentMethod,
         List<PurchaseResponse
-                > products
+                > products,
+        UserDto user
 ) {
 }

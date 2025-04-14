@@ -22,6 +22,6 @@ server:
 application:
   config:
     material-url: http://localhost:8050/api/v1/materials
-    #payment-url: http://localhost:8222/api/v1/payments
+    user-url: http://localhost:9090/api/service/user
   static-user-id: 2 # Static user ID for development
 

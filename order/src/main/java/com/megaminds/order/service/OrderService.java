@@ -1,8 +1,6 @@
 package com.megaminds.order.service;
 
-import com.megaminds.order.dto.OrderLineRequest;
-import com.megaminds.order.dto.OrderRequest;
-import com.megaminds.order.dto.OrderResponse;
+import com.megaminds.order.dto.*;
 import com.megaminds.order.entity.Order;
 import com.megaminds.order.entity.PaymentMethod;
 import com.megaminds.order.entity.User;
@@ -13,6 +11,7 @@ import com.megaminds.order.material.PurchaseRequest;
 import com.megaminds.order.material.PurchaseResponse;
 import com.megaminds.order.repository.OrderRepository;
 import com.megaminds.order.repository.UserRepository;
+import com.megaminds.order.user.UserClient;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +30,7 @@ public class OrderService {
     private final OrderLineService orderLineService;
     private final OrderProducer orderProducer;
     private final MaterialClient materialClient;
+    private final UserClient userClient;
     private final SmsService smsService;
 
 
@@ -41,6 +41,7 @@ public class OrderService {
     public Integer createOrder(OrderRequest request) {
         var purchasedProducts = materialClient.purchaseProducts(request.materials());
         var order = this.orderRepository.save(mapper.toOrder(request));
+        UserDto customer = this.userClient.getUserById(request.customerId()).getBody().getData().getUser();
         System.out.println(request.materials());
         for (PurchaseRequest purchaseRequest : request.materials()) {
             orderLineService.saveOrderLine(
@@ -68,7 +69,8 @@ public class OrderService {
                         order.getReference(),
                         request.amount(),
                         request.paymentMethod(),
-                        purchasedProducts
+                        purchasedProducts,
+                        customer
                 )
         );
         // Envoi du SMS de confirmation
