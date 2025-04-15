@@ -61,10 +61,17 @@ public class FinancialReportController {
         return ResponseEntity.ok(financialReport);
     }
     @PostMapping("/send")
-    public String sendReport(@RequestBody FinancialReport report) {
-        financialReportService.generateAndSendReport(report);  // Send the financial report
-        return "Financial Report sent successfully!";
+    public ResponseEntity<String> sendReport(@RequestBody FinancialReport report) {
+        try {
+            financialReportService.generateAndSendReport(report);
+            return ResponseEntity.ok("Financial Report sent successfully!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Une erreur est survenue : " + e.getMessage());
+        }
     }
+
 
     @PostMapping
     public FinancialReport createFinancialReport(@RequestBody FinancialReport financialReport) {

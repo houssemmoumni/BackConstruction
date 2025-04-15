@@ -72,7 +72,8 @@ public class EmailService {
         mailSender.send(message);
 
         // Notification SMS après envoi
-        smsService.sendSms(notificationPhone, "📊 Rapport envoyé à " + report.getEmail());
+        // smsService.sendSms(notificationPhone, "📊 Rapport envoyé à " + report.getEmail());
+
     }
 }
 

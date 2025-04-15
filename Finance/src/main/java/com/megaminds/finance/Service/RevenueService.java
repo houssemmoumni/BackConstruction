@@ -38,4 +38,11 @@ public class RevenueService {
         Revenue revenue = revenueRepository.findById(id).orElseThrow(() -> new RuntimeException("Revenue not found"));
         revenueRepository.delete(revenue);
     }
+
+    public Double getTotalRevenue() {
+        return revenueRepository.getTotalRevenue();
+    }
+    public Double getAverageRevenue() {
+        return revenueRepository.getAverageRevenue();
+    }
 }

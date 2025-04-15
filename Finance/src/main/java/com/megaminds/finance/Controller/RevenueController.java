@@ -5,6 +5,7 @@ import com.megaminds.finance.Entity.Revenue;
 import com.megaminds.finance.Service.ProjectClient;
 import com.megaminds.finance.Service.RevenueService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,4 +53,12 @@ public class RevenueController {
         return ResponseEntity.ok(projectClient.getAllProjects());
     }
 
+    @GetMapping("/total")
+    public Double getTotalRevenue() {
+        return revenueService.getTotalRevenue();
+    }
+    @GetMapping("/average")
+    public Double getAverageRevenue() {
+        return revenueService.getAverageRevenue();
+    }
 }

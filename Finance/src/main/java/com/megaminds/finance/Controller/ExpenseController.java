@@ -43,4 +43,8 @@ public class ExpenseController {
         expenseService.deleteExpense(id);
         return ResponseEntity.noContent().build();
     }
+    @GetMapping("/total")
+    public Double getTotalExpense() {
+        return expenseService.getTotalExpense();
+    }
 }

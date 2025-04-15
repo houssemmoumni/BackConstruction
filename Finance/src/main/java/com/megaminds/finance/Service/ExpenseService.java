@@ -38,4 +38,8 @@ public class ExpenseService {
         Expense expense = expenseRepository.findById(id).orElseThrow(() -> new RuntimeException("Expense not found"));
         expenseRepository.delete(expense);
     }
+
+    public Double getTotalExpense() {
+        return expenseRepository.getTotalExpense();
+    }
 }
