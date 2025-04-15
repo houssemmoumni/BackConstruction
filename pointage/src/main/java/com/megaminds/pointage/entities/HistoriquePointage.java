@@ -1,6 +1,7 @@
 package com.megaminds.pointage.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
@@ -36,7 +37,12 @@ public class HistoriquePointage {
     // Relation Many-to-One avec l'entité User
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_user", nullable = false)
+    @JsonIgnore
     private User user; // Relation avec User
+    @JsonProperty("id_user")
+    public Long getUserId() {
+        return user != null ? user.getId() : null;
+    }
 
     private Integer score;
 

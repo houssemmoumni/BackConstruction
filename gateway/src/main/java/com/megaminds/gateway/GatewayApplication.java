@@ -19,6 +19,8 @@ public class GatewayApplication {
         return builder.routes()
                 .route("ASSURANCE", r -> r.path("/api/assurance/**")
                         .uri("lb://ASSURANCE"))
+                .route("POINTAGE", r -> r.path("/api/pointage/**")
+                        .uri("lb://POINTAGE"))
                 .build();
     }
 }

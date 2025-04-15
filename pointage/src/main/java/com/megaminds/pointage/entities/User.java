@@ -14,15 +14,19 @@ public class User {
     @Column(name = "image", columnDefinition = "LONGBLOB")
     private byte[] image;
 
+    @Column(name = "telephone", nullable = false)
+    private Long telephone;
+
     // Relation OneToMany avec HistoriquePointage
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<HistoriquePointage> historiquePointages; // Liste des historiques de pointage associés à l'utilisateur
+    private List<HistoriquePointage> historiquePointages;
 
     // Constructeurs
     public User() {}
 
-    public User(byte[] image) {
+    public User(byte[] image, Long telephone) {
         this.image = image;
+        this.telephone = telephone;
     }
 
     // Getters et Setters
@@ -40,6 +44,14 @@ public class User {
 
     public void setImage(byte[] image) {
         this.image = image;
+    }
+
+    public Long getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(Long telephone) {
+        this.telephone = telephone;
     }
 
     public List<HistoriquePointage> getHistoriquePointages() {
