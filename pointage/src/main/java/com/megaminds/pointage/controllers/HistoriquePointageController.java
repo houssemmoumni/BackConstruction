@@ -13,7 +13,7 @@ import java.io.ByteArrayInputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-
+//@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/api/pointage/historique-pointages")
 public class HistoriquePointageController {

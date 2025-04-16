@@ -1,5 +1,6 @@
 package com.megaminds.pointage.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -10,18 +11,18 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Lob // Stockage en BLOB dans la base de données
+    @Lob
     @Column(name = "image", columnDefinition = "LONGBLOB")
     private byte[] image;
 
     @Column(name = "telephone", nullable = false)
     private Long telephone;
 
-    // Relation OneToMany avec HistoriquePointage
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnore  // This breaks the circular reference
     private List<HistoriquePointage> historiquePointages;
 
-    // Constructeurs
+    // Constructors
     public User() {}
 
     public User(byte[] image, Long telephone) {
@@ -29,7 +30,7 @@ public class User {
         this.telephone = telephone;
     }
 
-    // Getters et Setters
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -60,5 +61,13 @@ public class User {
 
     public void setHistoriquePointages(List<HistoriquePointage> historiquePointages) {
         this.historiquePointages = historiquePointages;
+    }
+
+    // Helper method to expose just the pointage IDs if needed
+    @Transient
+    public List<Long> getHistoriquePointageIds() {
+        return historiquePointages != null ?
+                historiquePointages.stream().map(HistoriquePointage::getId).toList() :
+                List.of();
     }
 }
