@@ -40,6 +40,19 @@ spring:
           uri: lb:http://PAYMENT-SERVICE
           predicates:
                - Path=/api/v1/payments/**
+        - id: project-service
+          uri: lb://PROJECT-SERVICE
+          predicates:
+            - Path=/pro/**
+            - Path=/workers/**
+        - id: finance-service
+          uri: lb://FINANCE-SERVICE
+          predicates:
+            - Path=/api/budgets/**
+            - Path=/api/expenses/**
+            - Path=/api/financial-reports/**
+            - Path=/api/revenues/**
+            - Path=/api/sms/**
       globalcors:
         cors-configurations:
           '[/**]':
