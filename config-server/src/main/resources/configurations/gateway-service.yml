@@ -1,5 +1,6 @@
 server:
   port: 8222
+
 spring:
   cloud:
     gateway:
@@ -70,6 +71,31 @@ spring:
           uri: lb://USER-SERVICE
           predicates:
             - Path=/api/service/user/**
+
+        # Route for assurances
+        - id: assurances-route
+          uri: lb://ASSURANCE-SERVICE
+          predicates:
+            - Path=/api/assurances/**
+
+        # Route for contrats
+        - id: contrats-route
+          uri: lb://ASSURANCE-SERVICE
+          predicates:
+            - Path=/api/contrats/**
+
+        # Route for maintenances
+        - id: maintenances-route
+          uri: lb://ASSURANCE-SERVICE
+          predicates:
+            - Path=/api/maintenances/**
+
+        # Route for projets
+        - id: projets-route
+          uri: lb://ASSURANCE-SERVICE
+          predicates:
+            - Path=/api/projets/**
+
       globalcors:
         cors-configurations:
           '[/**]':
@@ -86,3 +112,4 @@ spring:
             allowed-headers: "*"
             allow-credentials: true
             max-age: 3600 # Cache preflight response for 1 hour
+

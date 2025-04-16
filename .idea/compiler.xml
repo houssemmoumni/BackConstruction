@@ -8,65 +8,61 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="Communication_Service" />
+        <module name="Task" />
+        <module name="Finance" />
         <module name="ConstructionPI" />
+        <module name="Recrutement" />
         <module name="project" />
         <module name="config-server" />
+        <module name="notification" />
+        <module name="material" />
         <module name="Gateway" />
         <module name="discovery" />
-        <module name="gateway-service" />
         <module name="Back" />
+        <module name="payment" />
         <module name="Blog_Formation_Service" />
         <module name="Course_Service" />
-      </profile>
-      <profile name="Annotation profile for payment" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="false">
-          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.36/lombok-1.18.36.jar" />
-        </processorPath>
-        <module name="notification" />
-        <module name="payment" />
-        <module name="Task" />
-        <module name="material" />
+        <module name="incident" />
+        <module name="gateway" />
         <module name="order" />
       </profile>
-      <profile name="Annotation profile for Finance" enabled="true">
+      <profile name="Annotation profile for pointage" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
         </processorPath>
-        <module name="incident" />
-        <module name="Finance" />
-        <module name="Recrutement" />
+        <module name="assurance" />
+        <module name="pointage" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="gateway" target="17" />
+      <module name="gateway-service" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="Back" options="-parameters" />
-      <module name="Blog_Formation_Service" options="-parameters" />
-      <module name="Communication_Service" options="-parameters" />
-      <module name="Course_Service" options="-parameters" />
-      <module name="Finance" options="-parameters" />
+      <module name="Back" options="" />
+      <module name="Blog_Formation_Service" options="" />
+      <module name="Communication_Service" options="" />
+      <module name="Course_Service" options="" />
+      <module name="Finance" options="" />
       <module name="Gateway" options="-parameters" />
-      <module name="Recrutement" options="-parameters" />
-      <module name="Task" options="-parameters" />
+      <module name="Recrutement" options="" />
+      <module name="Task" options="" />
+      <module name="assurance" options="-parameters" />
       <module name="config-server" options="-parameters" />
       <module name="discovery" options="-parameters" />
       <module name="gateway" options="-parameters" />
       <module name="gateway-service" options="-parameters" />
-      <module name="incident" options="-parameters" />
-      <module name="material" options="-parameters" />
-      <module name="notification" options="-parameters" />
-      <module name="order" options="-parameters" />
-      <module name="payment" options="-parameters" />
-      <module name="project" options="-parameters" />
+      <module name="incident" options="" />
+      <module name="material" options="" />
+      <module name="notification" options="" />
+      <module name="order" options="" />
+      <module name="payment" options="" />
+      <module name="pointage" options="-parameters" />
+      <module name="project" options="" />
     </option>
   </component>
 </project>
