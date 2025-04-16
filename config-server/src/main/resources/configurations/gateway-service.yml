@@ -41,18 +41,35 @@ spring:
           predicates:
                - Path=/api/v1/payments/**
         - id: project-service
-          uri: lb://PROJECT-SERVICE
+          uri: lb:http://PROJECT-SERVICE
           predicates:
             - Path=/pro/**
             - Path=/workers/**
-        - id: finance-service
-          uri: lb://FINANCE-SERVICE
+        - id: expenses-service
+          uri: lb:http://FINANCE-SERVICE
+          predicates:
+            - Path=/api/expenses/**
+        - id: budget-service
+          uri: lb:http://FINANCE-SERVICE
           predicates:
             - Path=/api/budgets/**
-            - Path=/api/expenses/**
+        - id: finance-service
+          uri: lb:http://Finance
+          predicates:
             - Path=/api/financial-reports/**
+        - id: revenues-service
+          uri: lb:http://FINANCE-SERVICE
+          predicates:
             - Path=/api/revenues/**
+        - id: sms-service
+          uri: lb:http://FINANCE-SERVICE
+          predicates:
             - Path=/api/sms/**
+
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/api/service/user/**
       globalcors:
         cors-configurations:
           '[/**]':
