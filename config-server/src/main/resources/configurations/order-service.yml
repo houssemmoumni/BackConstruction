@@ -10,11 +10,18 @@ spring:
     properties:
       hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
     show-sql: true
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.type.mapping: orderConfirmation:com.megaminds.order.kafka.OrderConfirmation
 server:
   port: 8070
 application:
   config:
-    material-url:http://localhost:8222/api/v1/materials
+    material-url: http://localhost:8050/api/v1/materials
     #payment-url: http://localhost:8222/api/v1/payments
   static-user-id: 2 # Static user ID for development
 

@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 
 public record MaterialRequest(Integer id,
 
+
                               @NotNull(message = "Material name is required")
                               String name,
 

@@ -27,7 +27,11 @@ public class User {
     @JsonIgnore
     private Set<Task> tasks = new HashSet<>();
 
-    @OneToMany(mappedBy = "assignedTo", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "assignedTo", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JsonIgnore
     private Set<Task> tasksAssignedTo = new HashSet<>();
+
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private Set<Comment> comments = new HashSet<>();
 }

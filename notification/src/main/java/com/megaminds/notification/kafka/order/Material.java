@@ -1,4 +1,4 @@
-package com.megaminds.notification.dto;
+package com.megaminds.notification.kafka.order;
 
 import java.math.BigDecimal;
 
