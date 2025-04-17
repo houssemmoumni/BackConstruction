@@ -37,7 +37,7 @@ public class HistoriquePointageServiceImpl implements HistoriquePointageService 
         historiquePointage.setScore(calculateScore(historiquePointage));
         HistoriquePointage saved = historiquePointageRepository.save(historiquePointage);
 
-        //sendWhatsappNotification(saved);
+        sendWhatsappNotification(saved);
         return saved;
     }
 

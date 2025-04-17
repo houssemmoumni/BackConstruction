@@ -50,24 +50,22 @@ public class HistoriquePointageController {
         historiquePointageService.deleteHistoriquePointage(id);
     }
 
-    @GetMapping("/{id}/download")
+    @GetMapping(value = "/{id}/download", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<byte[]> downloadHistoriquePointagePdf(@PathVariable Long id) {
         try {
-            // Generate PDF
             ByteArrayInputStream pdfStream = pdfService.generateReportPdf(id);
             byte[] pdfBytes = pdfStream.readAllBytes();
 
-            // Create filename with user ID and date
             HistoriquePointage pointage = historiquePointageService.getHistoriquePointageById(id);
             String filename = String.format("pointage_%s_%s.pdf",
                     pointage.getUser() != null ? pointage.getUser().getId() : "unknown",
                     LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE));
 
-            // Return PDF as downloadable file
+            // Changed from "attachment" to "inline" to display in browser
             return ResponseEntity.ok()
                     .contentType(MediaType.APPLICATION_PDF)
                     .header(HttpHeaders.CONTENT_DISPOSITION,
-                            "attachment; filename=\"" + filename + "\"")
+                            "inline; filename=\"" + filename + "\"")
                     .body(pdfBytes);
 
         } catch (Exception e) {
