@@ -300,6 +300,49 @@ public class UserController {
 
         return ResponseEntity.ok(usersList);
     }
+       @PreAuthorize("hasAuthority('chef_projet')")
+    @GetMapping("/GetOuvriers")
+    public ResponseEntity<List<User>> getOuvriers() {
+        List<User> ouvriers = userService.getUsersByRole("ouvrier");
+        return ResponseEntity.ok(ouvriers);
+    }
+    @PutMapping("/updateProfile")
+    public ResponseEntity<?> updateUserProfile(
+            @RequestParam String email,
+            @RequestParam String firstName,
+            @RequestParam String lastName,
+            @RequestParam int numTel) {
+
+        User updatedUser = userService.updateUserProfile(email, firstName, lastName, numTel);
+        if (updatedUser != null) {
+            return ResponseEntity.ok(updatedUser);  // Retourne l'utilisateur mis à jour
+        } else {
+            return ResponseEntity.status(404).body("User not found");  // Si l'utilisateur n'est pas trouvé
+        }
+    }
+    // Get the user ID of the logged-in user
+    @GetMapping("/GetUserId")
+    public ResponseEntity<ApiResponse> getUserId(Authentication authentication) {
+        if (authentication != null) {
+            String username = authentication.getName();  // Get the username of the logged-in user
+
+            // Retrieve the user from the local database by username
+            Optional<User> userOptional = Optional.ofNullable(userService.GetUserByUserName(username));
+
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
+                Long userId = user.getId_User();  // Assuming the ID is of type Long
+
+                return ResponseEntity.ok(new ApiResponse(true, "User ID retrieved successfully", userId));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiResponse(false, "User not found in the local database", null));
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResponse(false, "No authentication information available", null));
+        }
+    }
 
 
 
