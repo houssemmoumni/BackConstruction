@@ -127,7 +127,25 @@ public class UserServiceImp implements UserService {
         return resultRoles;
     }
 
+ public List<User> getOuvriers() {
+        List<User> allUsers = userRepository.findAll();
+        return allUsers.stream()
+                .filter(user -> user.getRole().equalsIgnoreCase("ouvrier"))
+                .collect(Collectors.toList());
+    }
 
+
+    @Override
+    public User updateUserProfile(String email, String firstName, String lastName, int numTel) {
+        User user = userRepository.findByEmail(email);
+        if (user != null) {
+            user.setFirstName(firstName);
+            user.setLastName(lastName);
+            user.setNum_tel(numTel);
+            return userRepository.save(user);  // Sauvegarder les modifications dans la base de données
+        }
+        return null;  // Si l'utilisateur n'existe pas
+    }
 
     private final UserRepository userRepos;
 
